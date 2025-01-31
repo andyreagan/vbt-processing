@@ -1,6 +1,6 @@
 # VBT Processing
 
-y![Notebook Runs](https://github.com/andyreagan/vbt/actions/workflows/notebook-test.yml/badge.svg)
+![Notebook Runs](https://github.com/andyreagan/vbt/actions/workflows/notebook-test.yml/badge.svg)
 
 
 Process the [SOA's VBT tables](https://www.soa.org/resources/experience-studies/2015/2015-valuation-basic-tables/) for use in Python.
