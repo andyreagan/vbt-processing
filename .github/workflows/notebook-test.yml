@@ -37,7 +37,7 @@ jobs:
         
     - name: Validate parquet output
       run: |
-        python -c '
+        python - <<EOF
 import pandas as pd
 import sys
 
@@ -55,7 +55,7 @@ if not new_df.equals(ref_df):
         print(f"Shape mismatch: new {new_df.shape} vs original {ref_df.shape}")
     else:
         diff_mask = ~new_df.equals(ref_df)
-        if isinstance(diff_mask, bool):  # For scalar comparison
+        if isinstance(diff_mask, bool):
             print("All values are different")
         else:
             changed_cols = diff_mask.any()
@@ -63,4 +63,4 @@ if not new_df.equals(ref_df):
     sys.exit(1)
 else:
     print("✅ Parquet file contents match reference")
-'
+EOF
