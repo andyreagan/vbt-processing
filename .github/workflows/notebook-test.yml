@@ -36,31 +36,30 @@ jobs:
         jupyter nbconvert --to notebook --execute *.ipynb --inplace
         
     - name: Validate parquet output
+      shell: python
       run: |
-        python - <<EOF
-import pandas as pd
-import sys
+        import pandas as pd
+        import sys
 
-# Read the newly generated parquet
-new_df = pd.read_parquet("vbt.parquet")
+        # Read the newly generated parquet
+        new_df = pd.read_parquet("vbt.parquet")
 
-# Read the original parquet saved before notebook execution
-ref_df = pd.read_parquet("vbt.parquet.original")
+        # Read the original parquet saved before notebook execution
+        ref_df = pd.read_parquet("vbt.parquet.original")
 
-# Compare dataframes
-if not new_df.equals(ref_df):
-    print("❌ Parquet file contents have changed!")
-    print("\nDifferences found:")
-    if new_df.shape != ref_df.shape:
-        print(f"Shape mismatch: new {new_df.shape} vs original {ref_df.shape}")
-    else:
-        diff_mask = ~new_df.equals(ref_df)
-        if isinstance(diff_mask, bool):
-            print("All values are different")
+        # Compare dataframes
+        if not new_df.equals(ref_df):
+            print("❌ Parquet file contents have changed!")
+            print("\nDifferences found:")
+            if new_df.shape != ref_df.shape:
+                print(f"Shape mismatch: new {new_df.shape} vs original {ref_df.shape}")
+            else:
+                diff_mask = ~new_df.equals(ref_df)
+                if isinstance(diff_mask, bool):
+                    print("All values are different")
+                else:
+                    changed_cols = diff_mask.any()
+                    print("Changed columns:", changed_cols[changed_cols].index.tolist())
+            sys.exit(1)
         else:
-            changed_cols = diff_mask.any()
-            print("Changed columns:", changed_cols[changed_cols].index.tolist())
-    sys.exit(1)
-else:
-    print("✅ Parquet file contents match reference")
-EOF
+            print("✅ Parquet file contents match reference")
